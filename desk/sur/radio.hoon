@@ -16,7 +16,7 @@
 +$  chat
   $:
     message=cord
-    from=?@((pair src=ship vouch=ship) ship)
+    from=ship  ::$@(ship (pair src=ship vouch=ship))
     time=@da
   ==
 ::
@@ -98,6 +98,13 @@
     [%tower-update tow=tower-3-update]
     [%delete-chat from=ship time=@da]
   ==
+::  from /app/tenna
++$  tune-update  [%tune (unit @p)]
++$  spin-history-update  [%spin-history (set cord)]
+::  from /app/tower
++$  spin-update  [%spin url=cord time=@da]
++$  chatlog-update  [%chatlog (list chat)]
++$  viewers-update  [%viewers (map ship time)]
 ::
 +$  authorization
   $:  who=@p

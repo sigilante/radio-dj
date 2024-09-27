@@ -26,7 +26,7 @@
   (give-simple-payload:app:server eyre-id pl)
 ::  main
 ++  router
-  |_  [=state:sur =bowl:gall]
+  |_  [state=state-0:sur =bowl:gall]
   ++  eyre
     |=  =order
     ^-  (list card:agent:gall)
@@ -69,7 +69,7 @@
     |^
     =/  p=(pole knot)  site.rl
     ::
-    ?:  ?=([%f rest=*] p)  (serve-fragment rest.p)
+    :: ?:  ?=([%f rest=*] p)  (serve-fragment rest.p)
     %-  add-layout
     ?+  p  manx-bail
       [%tune ~]     serve-tune
@@ -80,7 +80,7 @@
     ::
     ++  serve-tune
       ^-  manx
-      ;  {(scow %p (need tune))}
+      ;/  (scow %p (need tune.state))
     ::
     ++  serve-chatlog
       ^-  manx
@@ -88,11 +88,27 @@
     ::
     ++  serve-viewers
       ^-  manx
-      ;+  (lent ~(tap by viewers:state))
+      ;/  (scow %ud ~(wyt by viewers.state))
     ::
     ++  serve-sync
       ^-  manx
       *manx
     --
+  ++  handle-metamask
+    |=  =order
+    ::  special-case MetaMask auth handling
+    =/  new-challenge  (sham [now eny]:bowl)
+    %+  weld  (self-poke [%meta new-challenge])
+    %+  give-simple-payload:app:server
+      id.order
+    ^-  simple-payload:http
+    :-  :-  200
+        ~[['Content-Type' 'application/json']]
+    `(as-octs:mimes:html (en:json:html (enjs-challenge new-challenge)))
   --
+  ++  self-poke
+    |=  noun=*
+    ^-  (list card:agent:gall)
+    :~  [%pass /gib %agent [our.bowl dap.bowl] %poke %noun !>(noun)]
+    ==
 --

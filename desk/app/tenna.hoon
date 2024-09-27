@@ -200,6 +200,20 @@
     :_  this
     :~  (active:vita-client bowl)
     ==
+    ::
+      [%tune ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(`tune-update:store`[%tune tune])
+    ==  ==
+    ::
+      [%spin-history ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(`spin-history-update:store`[%spin-history spin-history])
+    ==  ==
   ==
 --
 :: ::

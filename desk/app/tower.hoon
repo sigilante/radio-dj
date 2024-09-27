@@ -395,36 +395,57 @@
       ==
       
     :_  this
-      :~
-        (transmit-card [%viewers ships])
-        ::
-        :: TODO
-        ::  during active use, its nice to send this data one bit at a time
-        ::  but for the initial state load, it would be better to send
-        ::  everything in a single fact
-        ::   ::
-        ::  unfortunately, this would require a refactor
-        ::  or at least junk up the code in some way
-        ::  i think there is much room for improvement, and a refactor for this purpose
-        ::  will be in order soon
-        ::   ::
-        ::   :: (later)
-        ::   hmmm, I tried adding an %initialize radio-action, with the full tower state inside.
-        ::   I got some very buggy behavior that I was totally unable to track down for 8 hours.
-        ::      I verified that I was sending out a fact %initialize with all of the correct data,
-        ::      but somehow, on the other end, some fields were bunted.
-        ::      I dug a few layers deep into gall to try to find the issue, but no dice.
-        ::   giving up, returning to tradition. just sending a flurry of initial facts instead of one chunk of state.
-        ::   still want to fix this eventually but it will probably have to come with a near full rewrite of radio.
-        ::   ::
-        ::   :: (later again)
-        ::   lol the above issue was using e.g. face=_'special bunt' instead of face=cord for the mold of the update type.
-        ::   just breaks something somewhere in the gall/clay/ames pipeline on the way to the subscriber
-        ::
-        (init-fact [%tower-update tower-update])
-        ::
-        (kick-only:io src.bowl ~[/personal])
-      ==
+    :~
+      (transmit-card [%viewers ships])
+      ::
+      :: TODO
+      ::  during active use, its nice to send this data one bit at a time
+      ::  but for the initial state load, it would be better to send
+      ::  everything in a single fact
+      ::   ::
+      ::  unfortunately, this would require a refactor
+      ::  or at least junk up the code in some way
+      ::  i think there is much room for improvement, and a refactor for this purpose
+      ::  will be in order soon
+      ::   ::
+      ::   :: (later)
+      ::   hmmm, I tried adding an %initialize radio-action, with the full tower state inside.
+      ::   I got some very buggy behavior that I was totally unable to track down for 8 hours.
+      ::      I verified that I was sending out a fact %initialize with all of the correct data,
+      ::      but somehow, on the other end, some fields were bunted.
+      ::      I dug a few layers deep into gall to try to find the issue, but no dice.
+      ::   giving up, returning to tradition. just sending a flurry of initial facts instead of one chunk of state.
+      ::   still want to fix this eventually but it will probably have to come with a near full rewrite of radio.
+      ::   ::
+      ::   :: (later again)
+      ::   lol the above issue was using e.g. face=_'special bunt' instead of face=cord for the mold of the update type.
+      ::   just breaks something somewhere in the gall/clay/ames pipeline on the way to the subscriber
+      ::
+      (init-fact [%tower-update tower-update])
+      ::
+      (kick-only:io src.bowl ~[/personal])
+    ==
+    ::
+      [%spin ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(`spin-update:store`[%spin url.spin start-time.spin])
+    ==  ==
+    ::
+      [%chatlog ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(`chatlog-update:store`[%chatlog chatlog])
+    ==  ==
+    ::
+      [%viewers ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(`viewers-update:store`[%viewers viewers])
+    ==  ==
   ==
 --
 :: ::

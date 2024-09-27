@@ -40,7 +40,32 @@
   !>(state)
 ++  on-init
   ^-  (quip card _this)
-  `this
+  :_  this
+  :~  :*  %pass
+          /tune/(scot %da now.bowl)  %agent
+          [(scot %p (need tune.state)) %tenna]
+          %watch  /tune
+      ==
+      :*  %pass
+          /spin/(scot %da now.bowl)  %agent
+          [(scot %p (need tune.state)) %tower]
+          %watch  /spin
+      ==
+      :*  %pass
+          /spin-history/(scot %da now.bowl)  %agent
+          [(scot %p (need tune.state)) %tenna]
+          %watch  /spin-history
+      ==
+      :*  %pass
+          /chatlog/(scot %da now.bowl)  %agent
+          [(scot %p (need tune.state)) %tower]
+          %watch  /chatlog
+      ==
+      :*  %pass
+          /viewers/(scot %da now.bowl)  %agent
+          [(scot %p (need tune.state)) %tower]
+          %watch  /viewers
+  ==  ==
 ++  on-leave
   |=  [=path]
   `this
@@ -116,7 +141,6 @@
     `this
     ::
       %handle-http-action
-    ::  authenticated.req.order
     =/  order  !<(order:router vase)
     ?:  =('GET' method.request.req.order)
       [(eyre:router order) this]
@@ -168,28 +192,20 @@
   |=  old-tune=(unit ship)
   ^-  (list card)
   leave-all-wex
-  :: ?~  old-tune  ~
-  :: :~
-  :: [%pass (global-wire u.old-tune) %agent [u.old-tune provider] %leave ~]
-  :: [%pass (personal-wire u.old-tune) %agent [u.old-tune provider] %leave ~]
-  :: ==
 ++  watch
   |=  new-tune=(unit ship)
   ^-  (list card)
   ?~  new-tune
-    :~
-      (fact:agentio tuneout ~[/frontend])
+    :~  (fact:agentio tuneout ~[/frontend])
     ==
-  :~
-  [%pass (global-wire u.new-tune) %agent [u.new-tune provider] %watch /global]
-  [%pass (personal-wire u.new-tune) %agent [u.new-tune provider] %watch /personal]
+  :~  [%pass (global-wire u.new-tune) %agent [u.new-tune provider] %watch /global]
+      [%pass (personal-wire u.new-tune) %agent [u.new-tune provider] %watch /personal]
   ==
 ++  fwd
   |=  [act=action:store]
   ?~  tune.state  ~
-  :~
-    %+  poke:pass:agentio
-      [(need tune.state) provider]
+  :~  %+  poke:pass:agentio
+        [(need tune.state) provider]
       :-  %radio-action
       !>  act
   ==
@@ -212,7 +228,7 @@
     :~  :*  %pass
             /chat/(scot %da now.bowl)  %agent
             [(scot %p (need tune.state)) %tower]
-            %poke %radio-action  !>([%chat msg])
+            %poke  %radio-action  !>([%chat msg])
     ==  ==
   --
 ::  MetaMask authentication successful.
