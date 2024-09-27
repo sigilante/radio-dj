@@ -8,12 +8,16 @@ viewing parties, audio/video curation, scheduled broadcasting, or just hanging o
 
 there are two agents: tower and tenna.
 
-tenna manages a single subscription to a remote tower configurable from the UI.
+`%tenna` manages a single subscription to a remote tower configurable from the UI.
 
-tower stores a configurable url+timestamp for media and relays chat messages to all subscribers.
+`%tower` stores a configurable url+timestamp for media and relays chat messages to all subscribers.
+
+`%tuner` provides a static tuned-in station with chatbox to arbitrary observers who log in with an rbit id
 
 ## UI
 
 the radio frontend uses the react-player npm library to play media based on a url+timestamp.
 
 every radio station has its own chatroom. to interact with radio, users type commands into chat.
+
+the tuner frontend is served using sail

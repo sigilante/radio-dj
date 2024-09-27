@@ -16,7 +16,7 @@
 +$  chat
   $:
     message=cord
-    from=ship
+    from=?@((pair src=ship vouch=ship) ship)
     time=@da
   ==
 ::
@@ -52,7 +52,7 @@
     =spin
     description=_''
     viewers=(map ship time)
-    banned=(set ship)   
+    banned=(set ship)
     promoted=(set ship)
     chatlog=(list chat)
     greg-cache=[age=@da tows=(map ship minitower:greg)]
@@ -97,5 +97,12 @@
     [%description description=cord]
     [%tower-update tow=tower-3-update]
     [%delete-chat from=ship time=@da]
+  ==
+::
++$  authorization
+  $:  who=@p
+      secret=@uv
+      adr=tape
+      sig=tape
   ==
 --
