@@ -3,6 +3,7 @@
 /+  radio, vita-client
 /+  server
 /+  default-agent, dbug, verb, agentio
+/=  layout  /web/layout
 /=  router  /web/router
 =,  format
 :: ::
@@ -31,19 +32,24 @@
   ^-  (quip card _this)
   =/  old  !<(versioned-state old-state)
   ?-  -.old
-      %0  `this
+      %0  [[%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]~ this]
   ==
 ++  on-arvo
-  |=  [=wire =sign-arvo]
-  ^-  (quip card _this)
-  `this
+  |=  [=(pole knot) =sign-arvo]
+  ^-  [(list card) _this]
+  ?+    sign-arvo  ~|([%strange-sign-arvo -.sign-arvo] !!)
+      [%eyre %bound *]
+    ~&  >  '%tuner: %eyre bound endpoints'
+    [~ this]
+  ==
 ++  on-save
   ^-  vase
   !>(state)
 ++  on-init
   ^-  (quip card _this)
   :_  this
-  :~  :*  %pass
+  :~  [%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]
+      :*  %pass
           /tune/(scot %da now.bowl)  %agent
           [(need tune.state) %tenna]
           %watch  /tune
@@ -142,7 +148,7 @@
       [cards this]
     `this
     ::
-      %handle-http-action
+      %handle-http-request
     =/  order  !<(order:router vase)
     ?:  =('GET' method.request.req.order)
       [(eyre:rout order) this]
@@ -169,9 +175,10 @@
     ==
   ==
 ++  on-watch
-  |=  =path
-  ^-  (quip card _this)
-  (on-watch:def path)
+  |=  =(pole knot)
+  ?+  pole  !!
+    [%http-response id=@ ~]    [~ this]
+  ==
 --
 ::
 :: helper core

@@ -34,8 +34,6 @@
     =.  site.rl  ?~  site.rl  ~  t.site.rl
     =/  met  method.request.req.order
     =/  fpath=(pole knot)  [met site.rl]
-    ~&  >>  order
-    ~&  >>>  fpath
     |^
     :: if file extension assume its asset
     ?.  ?=(~ ext.rl)     (eyre-give (serve-assets rl))
@@ -70,13 +68,13 @@
     =/  p=(pole knot)  site.rl
     ::
     :: ?:  ?=([%f rest=*] p)  (serve-fragment rest.p)
-    :: %-  add-layout
+    %-  layout  :~
     ?+  p  manx-bail
-      [%tune ~]     serve-tune
-      [%chat ~]     serve-chatlog
-      [%viewers ~]  serve-viewers
-      [%sync ~]     serve-sync
-    ==
+      [%tuner %tune ~]     serve-tune
+      [%tuner %chat ~]     serve-chatlog
+      [%tuner %viewers ~]  serve-viewers
+      [%tuner %sync ~]     serve-sync
+    ==  ==
     ::
     ++  serve-tune
       ^-  manx
