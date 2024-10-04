@@ -21,7 +21,7 @@
   %-  html-response:gen:server
   %-  manx-to-octs:server  manx
 ++  redirect  |=  [eyre-id=@ta path=tape]
-  =/  url  (crip "{base-url:cons}{path}")
+  =/  url  (crip "/apps/radio{path}")
   =/  pl  (redirect:gen:server url)
   (give-simple-payload:app:server eyre-id pl)
 ::  main
@@ -70,7 +70,7 @@
     =/  p=(pole knot)  site.rl
     ::
     :: ?:  ?=([%f rest=*] p)  (serve-fragment rest.p)
-    %-  add-layout
+    :: %-  add-layout
     ?+  p  manx-bail
       [%tune ~]     serve-tune
       [%chat ~]     serve-chatlog
@@ -84,7 +84,18 @@
     ::
     ++  serve-chatlog
       ^-  manx
-      ;*  (turn chatlog:state (cury scow %p))
+      |^
+      ;div
+        ;*  (turn chatlog:state chat-to-manx)
+      ==
+      ++  chat-to-manx
+        |=  =chat:radio
+        ^-  manx
+        ;div
+          ;strong: {(scow %p from.chat)}
+          ;span: {(trip message.chat)}
+        ==
+      --
     ::
     ++  serve-viewers
       ^-  manx
@@ -105,10 +116,17 @@
     :-  :-  200
         ~[['Content-Type' 'application/json']]
     `(as-octs:mimes:html (en:json:html (enjs-challenge new-challenge)))
-  --
+  ++  enjs-challenge
+    =,  enjs:format
+    |=  chal=@
+    ^-  json
+    %-  pairs
+    :~  [%challenge [%s (scot %uv chal)]]
+    ==
   ++  self-poke
     |=  noun=*
     ^-  (list card:agent:gall)
     :~  [%pass /gib %agent [our.bowl dap.bowl] %poke %noun !>(noun)]
     ==
+  --
 --

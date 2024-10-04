@@ -1,6 +1,7 @@
 /-  store=radio
 /-  *tuner
 /+  radio, vita-client
+/+  server
 /+  default-agent, dbug, verb, agentio
 /=  router  /web/router
 =,  format
@@ -21,6 +22,7 @@
     def   ~(. (default-agent this %|) bowl)
     hc    ~(. +> bowl)
     io    ~(. agentio bowl)
+    rout  ~(. router:router [state bowl])
 ::
 ++  on-fail   on-fail:def
 ++  on-peek   on-peek:def
@@ -43,27 +45,27 @@
   :_  this
   :~  :*  %pass
           /tune/(scot %da now.bowl)  %agent
-          [(scot %p (need tune.state)) %tenna]
+          [(need tune.state) %tenna]
           %watch  /tune
       ==
       :*  %pass
           /spin/(scot %da now.bowl)  %agent
-          [(scot %p (need tune.state)) %tower]
+          [(need tune.state) %tower]
           %watch  /spin
       ==
       :*  %pass
           /spin-history/(scot %da now.bowl)  %agent
-          [(scot %p (need tune.state)) %tenna]
+          [(need tune.state) %tenna]
           %watch  /spin-history
       ==
       :*  %pass
           /chatlog/(scot %da now.bowl)  %agent
-          [(scot %p (need tune.state)) %tower]
+          [(need tune.state) %tower]
           %watch  /chatlog
       ==
       :*  %pass
           /viewers/(scot %da now.bowl)  %agent
-          [(scot %p (need tune.state)) %tower]
+          [(need tune.state) %tower]
           %watch  /viewers
   ==  ==
 ++  on-leave
@@ -143,8 +145,10 @@
       %handle-http-action
     =/  order  !<(order:router vase)
     ?:  =('GET' method.request.req.order)
-      [(eyre:router order) this]
-    [(handle-post:hc order) this]
+      [(eyre:rout order) this]
+    =^  cards  state
+      (handle-post:hc order)
+    [cards this]
     ::
       %radio-action
     ?.  =(src.bowl our.bowl)  `this
@@ -214,21 +218,20 @@
 ::
 ++  handle-post
   |=  =order:router
-  ^-  (quip card _this)
+  ^-  (quip card _that)
   |^
   =/  rl  (parse-request-line:server url.request.req.order)
   =/  p=(pole knot)  site.rl
-  ?+  p  `this
-    [%chat msg=@t ~]  (handle-chat msg)
+  ?+  p  [~ that]
+    [%chat msg=@t ~]  [(handle-chat msg.p) that]
   ==
   ++  handle-chat
     |=  msg=@t
-    ^-  (quip card _this)
-    :_  this
+    ^-  (list card)
     :~  :*  %pass
-            /chat/(scot %da now.bowl)  %agent
-            [(scot %p (need tune.state)) %tower]
-            %poke  %radio-action  !>([%chat msg])
+            /chat/[(scot %da now.bowl)]  %agent
+            [(need tune.state) %tower]
+            %poke  [%radio-action !>([%chat msg])]
     ==  ==
   --
 ::  MetaMask authentication successful.
