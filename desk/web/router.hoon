@@ -80,32 +80,40 @@
     ++  serve-root
       ^-  manx
       ;div.fc.hf
-        ;nav.b1
+        ;nav.b1.p2
           ;a: nav bar
         ==
-        ;main.fr.g5.grow
-          ;div.grow
-            ;iframe
-              =width  "560"
-              =height  "315"
+        ;main.fr.grow
+          ;div.grow.fc.basis-half
+            ;iframe.grow
               =frameborder  "0"
               =allow  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               =allowfullscreen  ""
               =src  "https://www.youtube.com/embed/XGC80iRS7tw?autoplay=1&mute=0&controls=1&origin=http%3A%2F%2Flocalhost&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&widgetid=1"  ::(trip url.spin.state)
               ;
             ==
-          ==
-          ;div
-            ;div.grow
-              ;*  (turn chatlog:state chat-to-manx)
+           ;div.fc
+           ;div.fr.ac.jb.p2
+              ;span: 1 viewer
+              ;span.underline: help
             ==
-            ;form.fc
-              ;input
-                =type  "text"
-                =placeholder  "message"
-                ;
-              ==
-              ;button.b1.hover(type "submit"): go
+            ;div: {(scow %p (fall tune.state ~zod))}
+          ==
+        ==
+        ;div.grow.b2.fc(style "min-width: 300px;")
+          ;div.grow
+            ;*  (turn chatlog:state chat-to-manx)
+          ==
+          ;form.fr
+            =method  "post"
+            =action  "/apps/tuner/chat/blah"
+            ;input.p-1.mono.grow
+              =type  "text"
+              =name  "message"
+              =placeholder  "message"
+              ;
+            ==
+            ;button.p-1.b1.hover(type "submit"): send
             ==
           ==
         ==

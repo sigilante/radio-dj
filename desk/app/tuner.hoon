@@ -32,7 +32,11 @@
   ^-  (quip card _this)
   =/  old  !<(versioned-state old-state)
   ?-  -.old
-      %0  [[%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]~ this]
+      %0
+        ~&  'will send init cards'
+        :_  this  ~
+        :::-  [%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]
+        ::init-cards:hc
   ==
 ++  on-arvo
   |=  [=(pole knot) =sign-arvo]
@@ -48,43 +52,30 @@
 ++  on-init
   ^-  (quip card _this)
   =.  tune.state  `our.bowl
+  ~&  'init hit'
   :_  this
-  :~  [%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]
-      :*  %pass
-          /tune/(scot %da now.bowl)  %agent
-          [(need tune.state) %tenna]
-          %watch  /tune
-      ==
-      :*  %pass
-          /spin/(scot %da now.bowl)  %agent
-          [(need tune.state) %tower]
-          %watch  /spin
-      ==
-      :*  %pass
-          /spin-history/(scot %da now.bowl)  %agent
-          [(need tune.state) %tenna]
-          %watch  /spin-history
-      ==
-      :*  %pass
-          /chatlog/(scot %da now.bowl)  %agent
-          [(need tune.state) %tower]
-          %watch  /chatlog
-      ==
-      :*  %pass
-          /viewers/(scot %da now.bowl)  %agent
-          [(need tune.state) %tower]
-          %watch  /viewers
-  ==  ==
+  :-  [%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]
+  init-cards:hc
 ++  on-leave
   |=  [=path]
   `this
 ++  on-agent
-  |=  [=wire =sign:agent:gall]
+  |=  [wire=(pole knot) =sign:agent:gall]
   ^-  (quip card _this)
-  ?~  tune.state  `this
+  ?~  tune.state
+    ?>  ?=([%tune @ ~] wire)
+    ?+    -.sign  (on-agent:def wire sign)
+        %fact
+      =/  new-tune  !<(tune-update:store q.cage.sign)
+      ~&  tuner/new-tune  :: [%tune [~ ~migrev]]
+      `this(tune +:new-tune)
+    ==
+    ::
   ?.  =(src.bowl (need tune.state))
     `this
   ?+    wire  (on-agent:def wire sign)
+      [%tune @ ~]
+        `this
       [%radio @ %personal ~]
     ?+    -.sign  (on-agent:def wire sign)
         %fact
@@ -187,6 +178,46 @@
 |_  bowl=bowl:gall
 +*  that  state
 ++  provider  %tower
+++  init-cards
+  =/  tune  our.bowl
+  :~
+    :*  %pass
+        /tune/(scot %da now.bowl)  %agent
+        [tune %tenna]
+        %watch  /tune
+    ==
+    :*  %pass
+        /spin/(scot %da now.bowl)  %agent
+        [tune %tower]
+        %watch  /spin
+    ==
+    :*  %pass
+        /spin-history/(scot %da now.bowl)  %agent
+        [tune %tenna]
+        %watch  /spin-history
+    ==
+    :*  %pass
+        /chatlog/(scot %da now.bowl)  %agent
+        [tune %tower]
+        %watch  /chatlog
+    ==
+    :*  %pass
+        /viewers/(scot %da now.bowl)  %agent
+        [tune %tower]
+        %watch  /viewers
+    ==  
+  ==
+++  http-cards
+  |=  [id=@ta headers=(list [@t @t]) body=@t]
+  =/  rath  [/http-response/[id]]~
+  =/  page  (as-octs:mimes:html body)
+  =/  status  (slav %ud (~(gut by (malt headers)) 'X-Status' '200'))
+  :~
+      [%give %fact rath %http-response-header !>([status headers])]
+      [%give %fact rath %http-response-data !>(`page)]
+      [%give %kick rath ~]
+  ==
+  ::
 ++  personal-wire
   |=  =ship
   ^-  wire
@@ -230,15 +261,24 @@
   |^
   =/  rl  (parse-request-line:server url.request.req.order)
   =/  p=(pole knot)  site.rl
-  ?+  p  [~ that]
-    [%chat msg=@t ~]  [(handle-chat msg.p) that]
+  ?+    p
+      :_  that
+      (http-cards id.order ['X-Status' '404']~ 'not found')
+    [%apps %tuner %chat msg=@t ~]
+      ~&  msg/msg.p
+      :_  that
+      %+  welp  (handle-chat msg.p)
+      %^    http-cards
+           id.order
+        ~[['X-Status' '303'] ['Location' '/apps/tuner']]
+      ''
   ==
   ++  handle-chat
     |=  msg=@t
     ^-  (list card)
     :~  :*  %pass
             /chat/[(scot %da now.bowl)]  %agent
-            [(need tune.state) %tower]
+            [(fall tune.state our.bowl) %tower]
             %poke  [%radio-action !>([%chat msg])]
     ==  ==
   --
