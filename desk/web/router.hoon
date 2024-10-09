@@ -70,29 +70,72 @@
     :: ?:  ?=([%f rest=*] p)  (serve-fragment rest.p)
     %-  layout  :~
     ?+  p  manx-bail
+      [%tuner ~]           serve-root
       [%tuner %tune ~]     serve-tune
       [%tuner %chat ~]     serve-chatlog
       [%tuner %viewers ~]  serve-viewers
       [%tuner %sync ~]     serve-sync
     ==  ==
     ::
+    ++  serve-root
+      ^-  manx
+      ;div.fc.hf
+        ;nav.b1.p2
+          ;a: nav bar
+        ==
+        ;main.fr.grow
+          ;div.grow.fc.basis-half
+            ;iframe.grow
+              =frameborder  "0"
+              =allow  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              =allowfullscreen  ""
+              =src  "https://www.youtube.com/embed/XGC80iRS7tw?autoplay=1&mute=0&controls=1&origin=http%3A%2F%2Flocalhost&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&widgetid=1"  ::(trip url.spin.state)
+              ;
+            ==
+           ;div.fc
+           ;div.fr.ac.jb.p2
+              ;span: 1 viewer
+              ;span.underline: help
+            ==
+            ;div: {(scow %p (fall tune.state ~zod))}
+          ==
+        ==
+        ;div.grow.b2.fc(style "min-width: 300px;")
+          ;div.grow
+            ;*  (turn chatlog:state chat-to-manx)
+          ==
+          ;form.fr
+            =method  "post"
+            =action  "/apps/tuner/chat/blah"
+            ;input.p-1.mono.grow
+              =type  "text"
+              =name  "message"
+              =placeholder  "message"
+              ;
+            ==
+            ;button.p-1.b1.hover(type "submit"): send
+            ==
+          ==
+        ==
+      ==
+      ::
     ++  serve-tune
       ^-  manx
       ;/  (scow %p (need tune.state))
     ::
+    ++  chat-to-manx
+      |=  =chat:radio
+      ^-  manx
+      ;div
+        ;strong: {(scow %p from.chat)}
+        ;span: {(trip message.chat)}
+      ==
     ++  serve-chatlog
       ^-  manx
       |^
       ;div
         ;*  (turn chatlog:state chat-to-manx)
       ==
-      ++  chat-to-manx
-        |=  =chat:radio
-        ^-  manx
-        ;div
-          ;strong: {(scow %p from.chat)}
-          ;span: {(trip message.chat)}
-        ==
       --
     ::
     ++  serve-viewers
