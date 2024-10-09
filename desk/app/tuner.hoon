@@ -47,6 +47,7 @@
   !>(state)
 ++  on-init
   ^-  (quip card _this)
+  =.  tune.state  `our.bowl
   :_  this
   :~  [%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]
       :*  %pass

@@ -70,29 +70,64 @@
     :: ?:  ?=([%f rest=*] p)  (serve-fragment rest.p)
     %-  layout  :~
     ?+  p  manx-bail
+      [%tuner ~]           serve-root
       [%tuner %tune ~]     serve-tune
       [%tuner %chat ~]     serve-chatlog
       [%tuner %viewers ~]  serve-viewers
       [%tuner %sync ~]     serve-sync
     ==  ==
     ::
+    ++  serve-root
+      ^-  manx
+      ;div.fc.hf
+        ;nav.b1
+          ;a: nav bar
+        ==
+        ;main.fr.g5.grow
+          ;div.grow
+            ;iframe
+              =width  "560"
+              =height  "315"
+              =frameborder  "0"
+              =allow  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              =allowfullscreen  ""
+              =src  "https://www.youtube.com/embed/XGC80iRS7tw?autoplay=1&mute=0&controls=1&origin=http%3A%2F%2Flocalhost&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&widgetid=1"  ::(trip url.spin.state)
+              ;
+            ==
+          ==
+          ;div
+            ;div.grow
+              ;*  (turn chatlog:state chat-to-manx)
+            ==
+            ;form.fc
+              ;input
+                =type  "text"
+                =placeholder  "message"
+                ;
+              ==
+              ;button.b1.hover(type "submit"): go
+            ==
+          ==
+        ==
+      ==
+      ::
     ++  serve-tune
       ^-  manx
       ;/  (scow %p (need tune.state))
     ::
+    ++  chat-to-manx
+      |=  =chat:radio
+      ^-  manx
+      ;div
+        ;strong: {(scow %p from.chat)}
+        ;span: {(trip message.chat)}
+      ==
     ++  serve-chatlog
       ^-  manx
       |^
       ;div
         ;*  (turn chatlog:state chat-to-manx)
       ==
-      ++  chat-to-manx
-        |=  =chat:radio
-        ^-  manx
-        ;div
-          ;strong: {(scow %p from.chat)}
-          ;span: {(trip message.chat)}
-        ==
       --
     ::
     ++  serve-viewers
