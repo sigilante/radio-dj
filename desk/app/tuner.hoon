@@ -33,17 +33,15 @@
   =/  old  !<(versioned-state old-state)
   ?-  -.old
       %0
-        ~&  'will send init cards'
-        :_  this  ~
-        :::-  [%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]
-        ::init-cards:hc
+        :_  this
+        :-  [%pass /root %arvo %e %connect [~ /apps/tuner] dap.bowl]
+        init-cards:hc
   ==
 ++  on-arvo
   |=  [=(pole knot) =sign-arvo]
   ^-  [(list card) _this]
   ?+    sign-arvo  ~|([%strange-sign-arvo -.sign-arvo] !!)
       [%eyre %bound *]
-    ~&  >  '%tuner: %eyre bound endpoints'
     [~ this]
   ==
 ++  on-save
@@ -62,69 +60,78 @@
 ++  on-agent
   |=  [wire=(pole knot) =sign:agent:gall]
   ^-  (quip card _this)
-  ?~  tune.state
-    ?>  ?=([%tune @ ~] wire)
+  ::  change channel if %tenna channel changes
+  ::
+  ?:  ?=([%tune @ ~] wire)
     ?+    -.sign  (on-agent:def wire sign)
         %fact
       =/  new-tune  !<(tune-update:store q.cage.sign)
-      ~&  tuner/new-tune  :: [%tune [~ ~migrev]]
       `this(tune +:new-tune)
     ==
-    ::
-  ?.  =(src.bowl (need tune.state))
-    `this
-  ?+    wire  (on-agent:def wire sign)
-      [%tune @ ~]
-        `this
-      [%radio @ %personal ~]
+  ?:  ?=([%spin @ ~] wire)
     ?+    -.sign  (on-agent:def wire sign)
         %fact
-      ?+    p.cage.sign  (on-agent:def wire sign)
-          %radio-action
-        =/  to-frontend  (fact:io cage.sign ~[/frontend])
-        =/  act  !<(action:store q.cage.sign)
-        ?+  -.act  [[to-frontend ~] this]
-            %spin
-          =.  spin-history
-            (~(put in spin-history) url.act)
-          [[to-frontend ~] this]
-            %tower-update
-          :_  this
-          =/  tune-act
-            :-  %radio-action
-            !>([%tune `src.bowl])
-          :~
-            to-frontend
-            (fact:io tune-act ~[/frontend])
-          ==
-        ==
-      ==
+      =/  new-spin  !<(spin-update:store q.cage.sign)
+      `this(spin +:new-spin)
     ==
-      [%radio @ %global ~]
-    ?+    -.sign  (on-agent:def wire sign)
-        %kick
-      :_  this
-      :~
-      (poke-self:pass:io tuneout)
-      ==
-        %fact
-      ?+    p.cage.sign  (on-agent:def wire sign)
-          %radio-action
-        :: WET: write everything twice!
-        :: the same exact code as /personal
-        :: intentionally violating DRY in favor of WET
-        =/  act  !<(action:store q.cage.sign)
-        =/  to-frontend  (fact:io cage.sign ~[/frontend])
-        ?+  -.act  [[to-frontend ~] this]
-            %spin
-          =.  spin-history
-            (~(put in spin-history) url.act)
-          [[to-frontend ~] this]
-        ==
-        :: /WET
-      ==
-    ==
-  ==
+  `this
+  ::?>  ?=([%spin ~] wire)
+  ::!!
+  ::
+  :: ?.  =(src.bowl (need tune.state))
+  ::   `this
+  :: ?+    wire  (on-agent:def wire sign)
+  ::     [%tune @ ~]
+  ::       `this
+  ::     [%radio @ %personal ~]
+  ::   ?+    -.sign  (on-agent:def wire sign)
+  ::       %fact
+  ::     ?+    p.cage.sign  (on-agent:def wire sign)
+  ::         %radio-action
+  ::       =/  to-frontend  (fact:io cage.sign ~[/frontend])
+  ::       =/  act  !<(action:store q.cage.sign)
+  ::       ?+  -.act  [[to-frontend ~] this]
+  ::           %spin
+  ::         =.  spin-history
+  ::           (~(put in spin-history) url.act)
+  ::         [[to-frontend ~] this]
+  ::           %tower-update
+  ::         :_  this
+  ::         =/  tune-act
+  ::           :-  %radio-action
+  ::           !>([%tune `src.bowl])
+  ::         :~
+  ::           to-frontend
+  ::           (fact:io tune-act ~[/frontend])
+  ::         ==
+  ::       ==
+  ::     ==
+  ::   ==
+  ::     [%radio @ %global ~]
+  ::   ?+    -.sign  (on-agent:def wire sign)
+  ::       %kick
+  ::     :_  this
+  ::     :~
+  ::     (poke-self:pass:io tuneout)
+  ::     ==
+  ::       %fact
+  ::     ?+    p.cage.sign  (on-agent:def wire sign)
+  ::         %radio-action
+  ::       :: WET: write everything twice!
+  ::       :: the same exact code as /personal
+  ::       :: intentionally violating DRY in favor of WET
+  ::       =/  act  !<(action:store q.cage.sign)
+  ::       =/  to-frontend  (fact:io cage.sign ~[/frontend])
+  ::       ?+  -.act  [[to-frontend ~] this]
+  ::           %spin
+  ::         =.  spin-history
+  ::           (~(put in spin-history) url.act)
+  ::         [[to-frontend ~] this]
+  ::       ==
+  ::       :: /WET
+  ::     ==
+  ::   ==
+  :: ==
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
@@ -188,7 +195,7 @@
     ==
     :*  %pass
         /spin/(scot %da now.bowl)  %agent
-        [tune %tower]
+        [tune %tenna]
         %watch  /spin
     ==
     :*  %pass
