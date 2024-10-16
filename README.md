@@ -12,7 +12,10 @@ there are two agents: tower and tenna.
 
 `%tower` stores a configurable url+timestamp for media and relays chat messages to all subscribers.
 
-`%tuner` provides a static tuned-in station with chatbox to arbitrary observers who log in with an rbit id
+`%tuner` provides a static tuned-in station with chatbox to arbitrary observers who log in with an Urbit id
+
+- access a broadcasting ship at its url `https://my.ship/apps/tuner`
+- currently (~2024.10.16) chat messages are not yet supported pending auth
 
 ## UI
 
