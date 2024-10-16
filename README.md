@@ -16,6 +16,7 @@ there are two agents: tower and tenna.
 
 - access a broadcasting ship at its url `https://my.ship/apps/tuner`
 - currently (~2024.10.16) chat messages are not yet supported pending auth
+- maybe add [this](https://github.com/urbit/urbit/blob/01afc2a143fcfb24904a6d64ee124d68307fac2c/pkg/arvo/app/weather.hoon)
 
 ## UI
 
