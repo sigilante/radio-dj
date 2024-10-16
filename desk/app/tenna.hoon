@@ -95,6 +95,7 @@
         =/  act  !<(action:store q.cage.sign)
         ?+  -.act  [[to-frontend ~] this]
             %spin
+                            ~&  act
           =.  spin-history
             (~(put in spin-history) url.act)
           [[to-frontend ~] this]
@@ -124,6 +125,8 @@
         :: the same exact code as /personal
         :: intentionally violating DRY in favor of WET
         =/  act  !<(action:store q.cage.sign)
+                ~&  act
+
         =/  to-frontend  (fact:io cage.sign ~[/frontend])
         ?+  -.act  [[to-frontend ~] this]
             %spin
@@ -160,7 +163,14 @@
                   :_  this  (fwd act)
           %presence
                   :_  this  (fwd act)
-          %spin   :_  this  (fwd act)
+          %spin
+            :_  this
+            :-
+              :*  %give  %fact  ~[/spin]
+                %noun
+                !>(`spin-update:store`act)
+              ==
+            (fwd act)
           %talk   :_  this  (fwd act)
           %chat   :_  this  (fwd act)
           %description
@@ -173,7 +183,6 @@
       :: (or dont leave =(old ~))
       :: (or dont watch =(old new))
       :: (or just leave =(new ~))
-      ~&  [%tenna 'onpoke %tune' tune.act]
       =*  new-tune  tune.act
       =/  old-tune  tune
       ::
@@ -182,7 +191,6 @@
       ::
       =/  watt
         (watch:hc new-tune)
-      ~&  watt
       =/  love
         (leave:hc old-tune)
       :_  this
@@ -196,7 +204,6 @@
   |=  =path
   ::
   ^-  (quip card _this)
-  ~&  on-watch/path
   ?+    path
     (on-watch:def path)
       [%frontend ~]
@@ -204,9 +211,15 @@
     :~  (active:vita-client bowl)
     ==
     ::
+      [%spin ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(*spin-update:store)
+    ==  ==
+    ::
       [%tune ~]
     :_  this
-    ~&  'channel changed'
     :~  :*  %give  %fact  ~
             %noun
             !>(`tune-update:store`[%tune tune])
@@ -258,15 +271,13 @@
           !>(`tune-update:store`[%tune (need new-tune)])
       ==  
     ==
-  ~&  tenna/'changing channel'
-  ~&  tenna/new-tune
   :~
-  [%pass (global-wire u.new-tune) %agent [u.new-tune provider] %watch /global]
-  [%pass (personal-wire u.new-tune) %agent [u.new-tune provider] %watch /personal]
-  :*  %give  %fact  ~[/tune]
+    [%pass (global-wire u.new-tune) %agent [u.new-tune provider] %watch /global]
+    [%pass (personal-wire u.new-tune) %agent [u.new-tune provider] %watch /personal]
+    :*  %give  %fact  ~[/tune]
       %noun
       !>(`tune-update:store`[%tune new-tune])
-      ==  
+    ==
   ==
 ++  fwd
   |=  [act=action:store]

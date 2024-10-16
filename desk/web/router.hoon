@@ -77,6 +77,25 @@
       [%tuner %sync ~]     serve-sync
     ==  ==
     ::
+    ++  yt-embed
+      |=  =tape
+      ^-  ^tape
+      %-  fall  :_  "https://www.youtube.com/embed/YQHsXMglC9A"
+      %-  mole
+      |.
+      ;:  weld
+        (scag (need (find "watch?v=" tape)) tape)
+        "embed/"
+        (swag [(add 8 (need (find "watch?v=" tape))) 11] tape)
+      ==
+    ++  yt-timestamp
+      |=  d=@da
+
+      ^-  tape
+      %+  welp  "start="
+      %-  a-co:co
+      s:(yell (sub now.bowl d))
+      ::
     ++  serve-root
       ^-  manx
       ;div.fc.hf
@@ -85,22 +104,23 @@
         ==
         ;main.fr.grow
           ;div.grow.fc.basis-half
+            ;div: {<`@dr`(sub now.bowl start-time.spin.state)>}
             ;iframe.grow
               =frameborder  "0"
               =allow  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               =allowfullscreen  ""
-              =src  "https://www.youtube.com/embed/XGC80iRS7tw?autoplay=1&mute=0&controls=1&origin=http%3A%2F%2Flocalhost&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&widgetid=1"  ::(trip url.spin.state)
+              =src  "{(yt-embed (trip url.spin.state))}?{(yt-timestamp start-time.spin.state)}"
               ;
             ==
            ;div.fc
-           ;div.fr.ac.jb.p2
+            ;div.fr.ac.jb.p2
               ;span: 1 viewer
               ;span.underline: help
             ==
-            ;div: {(scow %p (fall tune.state ~zod))}
+            ;div: watching {(scow %p (fall tune.state ~zod))}
           ==
         ==
-        ;div.grow.b2.fc(style "min-width: 300px;")
+        ;div.grow.b2.fc(style "min-width: 200px;")
           ;div.grow
             ;*  (turn chatlog:state chat-to-manx)
           ==
