@@ -1,5 +1,16 @@
 # radio
 
+**Status ~2024.10.30.  Mirrored tower state to tenna to make it easier to communicate to tuner.**
+
+Needs:
+
+- [x] handle %watch subs & updates
+- [x] make the actual page builder
+- [/] fix subscription/state mismatches
+- [ ] finish navbar
+- [ ] handle MetaMask auth/button
+- [ ] show default page for !authenticated.req.order
+
 watch videos and listen to music with your friends on urbit.
 
 viewing parties, audio/video curation, scheduled broadcasting, or just hanging out.
