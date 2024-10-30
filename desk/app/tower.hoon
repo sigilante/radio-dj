@@ -444,7 +444,7 @@
     :_  this
     :~  :*  %give  %fact  ~
             %noun
-            !>(`viewers-update:store`[%viewers viewers])
+            !>(`viewers-update:store`[%viewers ~(tap by viewers)])
     ==  ==
   ==
 --

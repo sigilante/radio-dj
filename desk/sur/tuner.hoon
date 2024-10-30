@@ -9,7 +9,7 @@
       =spin:radio
       spin-history=(set cord)
       chatlog=(list chat:radio)
-      viewers=(map ship time)
+      viewers=(set ship)
       ::
       sessions=(map comet=ship id=ship)
       challenges=(set @uv)

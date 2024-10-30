@@ -104,7 +104,7 @@
 ::  from /app/tower
 +$  spin-update  [%spin url=cord time=@da]
 +$  chatlog-update  [%chatlog (list chat)]
-+$  viewers-update  [%viewers (map ship time)]
++$  viewers-update  [%viewers (set ship)]
 ::
 +$  authorization
   $:  who=@p

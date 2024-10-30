@@ -7,20 +7,29 @@
 +$  versioned-state
   $%  state-0
       state-1
+      state-2
   ==
-+$  state-0  $:
-  %0
-  tune=(unit ship)
-  wack=_|
++$  state-0
+  $:  %0
+      tune=(unit ship)
+      wack=_|
   ==
-+$  state-1  $:
-  %1
-  tune=(unit ship)
-  spin-history=(set cord)
++$  state-1
+  $:  %1
+      tune=(unit ship)
+      spin-history=(set cord)
+  ==
++$  state-2
+  $:  %2
+      tune=(unit ship)
+      spin-history=(set cord)
+      =spin:radio
+      chatlog=(list chat:radio)
+      viewers=(set ship)
   ==
 +$  card     card:agent:gall
 --
-=|  state-1
+=|  state-2
 =*  state  -
 ^-  agent:gall
 %-  %-  agent:vita-client
@@ -50,8 +59,9 @@
   :: regular support for further upgrades
   =/  old  !<(versioned-state old-state)
   ?-  -.old
-      %0  `this
-      %1  `this
+    %0  `this(state [%2 tune *(set cord) *spin:radio *(list chat:store) *(set ship)])
+    %1  `this(state [%2 tune spin-history *spin:radio *(list chat:store) *(set ship)])
+    %2  `this
   ==
 ++  on-arvo
   |=  [=wire =sign-arvo]
@@ -150,60 +160,57 @@
     ?.  =(src.bowl our.bowl)
       `this
     =/  act  !<(action:store vase)
-    ?-  -.act
-      :: ::
-          %online        `this
-          %permissions   `this
-          %viewers       `this
-          %chatlog       `this
-          %tower-update  `this
-          :: %initialize   `this
-      :: ::
-          %delete-chat
-                  :_  this  (fwd act)
-          %presence
-                  :_  this  (fwd act)
-          %spin
-            :_  this
-            :-
-              :*  %give  %fact  ~[/spin]
+    ?-    -.act
+        %online         `this
+        %permissions    `this
+        %viewers
+      :_  this
+      :~  :*  %give  %fact  ~[/viewers]
+              %noun
+              !>(`viewers-update:store`act)
+      ==  ==
+        %chatlog
+      :_  this
+      :~  :*  %give  %fact  ~[/chatlog]
+              %noun
+              !>(`chatlog-update:store`act)
+      ==  ==
+      ::
+        %tower-update   `this
+      ::
+        %delete-chat    [(fwd act) this]
+      ::
+        %presence       [(fwd act) this]
+      ::
+        %spin
+      :_  this
+      :-  :*  %give  %fact  ~[/spin]
                 %noun
                 !>(`spin-update:store`act)
-              ==
-            (fwd act)
-          %talk   :_  this  (fwd act)
-          %chat   :_  this  (fwd act)
-          %description
-                  :_  this  (fwd act)
-      :: ::
-      :: ::
-      :: ::
-          %tune
-      :: leave the old, watch the new
-      :: (or dont leave =(old ~))
-      :: (or dont watch =(old new))
-      :: (or just leave =(new ~))
+            :: ==
+            :: :*  %give  %fact  ~[/spin-history]
+            ::     %noun
+            ::     !>(`spin-history-update:store`spin-history)
+          ==
+      (fwd act)
+      ::
+        %talk           [(fwd act) this]
+        %chat           [(fwd act) this]
+        %description    [(fwd act) this]
+      ::
+        %tune
       =*  new-tune  tune.act
       =/  old-tune  tune
-      ::
       =.  tune  new-tune
-      ::
-      ::
-      =/  watt
-        (watch:hc new-tune)
-      =/  love
-        (leave:hc old-tune)
-      :_  this
-      :: watt
-      :: love
-      (weld love watt)
-    :: ::
+      =/  watt  (watch:hc new-tune)
+      =/  love  (leave:hc old-tune)
+      [(weld love watt) this]
     ==
   ==
 ++  on-watch
   |=  =path
-  ::
   ^-  (quip card _this)
+  ~&  >>  [src.bowl path]
   ?+    path
     (on-watch:def path)
       [%frontend ~]
@@ -215,7 +222,7 @@
     :_  this
     :~  :*  %give  %fact  ~
             %noun
-            !>(*spin-update:store)
+            !>(`spin-update:store`[%spin spin])
     ==  ==
     ::
       [%tune ~]
@@ -230,6 +237,20 @@
     :~  :*  %give  %fact  ~
             %noun
             !>(`spin-history-update:store`[%spin-history spin-history])
+    ==  ==
+    ::
+      [%chatlog ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(`chatlog-update:store`[%chatlog chatlog])
+    ==  ==
+    ::
+      [%viewers ~]
+    :_  this
+    :~  :*  %give  %fact  ~
+            %noun
+            !>(`viewers-update:store`[%viewers viewers])
     ==  ==
   ==
 --

@@ -60,78 +60,46 @@
 ++  on-agent
   |=  [wire=(pole knot) =sign:agent:gall]
   ^-  (quip card _this)
+  ~&  >>>  [wire]
   ::  change channel if %tenna channel changes
-  ::
-  ?:  ?=([%tune @ ~] wire)
+  ?+    wire  `this
+      [%tune @ ~]
     ?+    -.sign  (on-agent:def wire sign)
         %fact
       =/  new-tune  !<(tune-update:store q.cage.sign)
       `this(tune +:new-tune)
     ==
-  ?:  ?=([%spin @ ~] wire)
+    ::
+      [%spin @ ~]
     ?+    -.sign  (on-agent:def wire sign)
         %fact
       =/  new-spin  !<(spin-update:store q.cage.sign)
+      ~&  >  +:new-spin
+      ~&  >  q.cage.sign
       `this(spin +:new-spin)
     ==
-  `this
-  ::?>  ?=([%spin ~] wire)
-  ::!!
-  ::
-  :: ?.  =(src.bowl (need tune.state))
-  ::   `this
-  :: ?+    wire  (on-agent:def wire sign)
-  ::     [%tune @ ~]
-  ::       `this
-  ::     [%radio @ %personal ~]
-  ::   ?+    -.sign  (on-agent:def wire sign)
-  ::       %fact
-  ::     ?+    p.cage.sign  (on-agent:def wire sign)
-  ::         %radio-action
-  ::       =/  to-frontend  (fact:io cage.sign ~[/frontend])
-  ::       =/  act  !<(action:store q.cage.sign)
-  ::       ?+  -.act  [[to-frontend ~] this]
-  ::           %spin
-  ::         =.  spin-history
-  ::           (~(put in spin-history) url.act)
-  ::         [[to-frontend ~] this]
-  ::           %tower-update
-  ::         :_  this
-  ::         =/  tune-act
-  ::           :-  %radio-action
-  ::           !>([%tune `src.bowl])
-  ::         :~
-  ::           to-frontend
-  ::           (fact:io tune-act ~[/frontend])
-  ::         ==
-  ::       ==
-  ::     ==
-  ::   ==
-  ::     [%radio @ %global ~]
-  ::   ?+    -.sign  (on-agent:def wire sign)
-  ::       %kick
-  ::     :_  this
-  ::     :~
-  ::     (poke-self:pass:io tuneout)
-  ::     ==
-  ::       %fact
-  ::     ?+    p.cage.sign  (on-agent:def wire sign)
-  ::         %radio-action
-  ::       :: WET: write everything twice!
-  ::       :: the same exact code as /personal
-  ::       :: intentionally violating DRY in favor of WET
-  ::       =/  act  !<(action:store q.cage.sign)
-  ::       =/  to-frontend  (fact:io cage.sign ~[/frontend])
-  ::       ?+  -.act  [[to-frontend ~] this]
-  ::           %spin
-  ::         =.  spin-history
-  ::           (~(put in spin-history) url.act)
-  ::         [[to-frontend ~] this]
-  ::       ==
-  ::       :: /WET
-  ::     ==
-  ::   ==
-  :: ==
+    ::
+      [%spin-history @ ~]
+    ?+    -.sign  (on-agent:def wire sign)
+        %fact
+      =/  new-spin-history  !<(spin-history-update:store q.cage.sign)
+      `this(spin-history +:new-spin-history)
+    ==
+    ::
+      [%chatlog @ ~]
+    ?+    -.sign  (on-agent:def wire sign)
+        %fact
+      =/  new-chatlog  !<(chatlog-update:store q.cage.sign)
+      `this(chatlog +:new-chatlog)
+    ==
+    ::
+      [%viewers @ ~]
+    ?+    -.sign  (on-agent:def wire sign)
+        %fact
+      =/  new-viewers  !<(viewers-update:store q.cage.sign)
+      `this(viewers +:new-viewers)
+    ==
+  ==
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
@@ -205,12 +173,12 @@
     ==
     :*  %pass
         /chatlog/(scot %da now.bowl)  %agent
-        [tune %tower]
+        [tune %tenna]
         %watch  /chatlog
     ==
     :*  %pass
         /viewers/(scot %da now.bowl)  %agent
-        [tune %tower]
+        [tune %tenna]
         %watch  /viewers
     ==  
   ==
@@ -268,17 +236,20 @@
   |^
   =/  rl  (parse-request-line:server url.request.req.order)
   =/  p=(pole knot)  site.rl
-  ?+    p
-      :_  that
-      (http-cards id.order ['X-Status' '404']~ 'not found')
-    [%apps %tuner %chat msg=@t ~]
-      ~&  msg/msg.p
-      :_  that
-      %+  welp  (handle-chat msg.p)
-      %^    http-cards
-           id.order
-        ~[['X-Status' '303'] ['Location' '/apps/tuner']]
-      ''
+  ?+      p
+        :_  that
+        (http-cards id.order ['X-Status' '404']~ 'not found')
+      [%apps %tuner %chat msg=@t ~]
+    ~&  msg/msg.p
+    :_  that
+    %+  welp  (handle-chat msg.p)
+    %^    http-cards
+          id.order
+      ~[['X-Status' '303'] ['Location' '/apps/tuner']]
+    ''
+    ::
+      [%apps %tuner %chat msg=@t ~]
+    [~ that(sessions (~(del by sessions) src.bowl))]
   ==
   ++  handle-chat
     |=  msg=@t

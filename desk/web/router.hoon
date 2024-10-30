@@ -68,13 +68,14 @@
     =/  p=(pole knot)  site.rl
     ::
     :: ?:  ?=([%f rest=*] p)  (serve-fragment rest.p)
-    %-  layout  :~
-    ?+  p  manx-bail
-      [%tuner ~]           serve-root
-      [%tuner %tune ~]     serve-tune
-      [%tuner %chat ~]     serve-chatlog
-      [%tuner %viewers ~]  serve-viewers
-      [%tuner %sync ~]     serve-sync
+    %-  layout
+    :~  ?+  p  manx-bail
+          [%tuner ~]           serve-root
+          [%tuner %tune ~]     serve-tune
+          [%tuner %chat ~]     serve-chatlog
+          [%tuner %viewers ~]  serve-viewers
+          [%tuner %sync ~]     serve-sync
+          [%tuner %f %sigil ~]    serve-sigil
     ==  ==
     ::
     ++  yt-embed
@@ -83,10 +84,17 @@
       %-  fall  :_  "https://www.youtube.com/embed/YQHsXMglC9A"
       %-  mole
       |.
+      ?~  (find "youtu.be" tape)
+        ::  style https://www.youtube.com/watch?v=YQHsXMglC9A
+        ;:  weld
+          (scag (need (find "watch?v=" tape)) tape)
+          "embed/"
+          (swag [(add 8 (need (find "watch?v=" tape))) 11] tape)
+        ==
+      ::  style https://youtu.be/XGC80iRS7tw
       ;:  weld
-        (scag (need (find "watch?v=" tape)) tape)
-        "embed/"
-        (swag [(add 8 (need (find "watch?v=" tape))) 11] tape)
+        "https://youtube.com/embed/"
+        (slag (add 8 (need (find "youtu.be" tape))) tape)
       ==
     ++  yt-timestamp
       |=  d=@da
@@ -98,47 +106,101 @@
       ::
     ++  serve-root
       ^-  manx
-      ;div.fc.hf
-        ;nav.b1.p2
-          ;a: nav bar
-        ==
-        ;main.fr.grow
-          ;div.grow.fc.basis-half
-            ;div: {<`@dr`(sub now.bowl start-time.spin.state)>}
-            ;iframe.grow
-              =frameborder  "0"
-              =allow  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              =allowfullscreen  ""
-              =src  "{(yt-embed (trip url.spin.state))}?{(yt-timestamp start-time.spin.state)}"
-              ;
+      ~&  >>>  (trip url.spin.state)
+      ~&  >>>  (yt-embed (trip url.spin.state))
+      ;div
+        ;+  navbar
+        ;div.fc.hf
+          ;main.fr.grow
+            ;div.grow.fc.basis-half
+              ;iframe.grow
+                =frameborder  "0"
+                =allow  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                =allowfullscreen  ""
+                =src  "{(yt-embed (trip url.spin.state))}?{(yt-timestamp start-time.spin.state)}"
+                ;
+              ==
+            ;div.fc
+              ;div.fr.ac.jb.p2
+                ;span: 1 viewer
+                ;span.underline: help
+              ==
+              ;div: watching {(scow %p (fall tune.state ~zod))}
             ==
-           ;div.fc
-            ;div.fr.ac.jb.p2
-              ;span: 1 viewer
-              ;span.underline: help
-            ==
-            ;div: watching {(scow %p (fall tune.state ~zod))}
           ==
-        ==
-        ;div.grow.b2.fc(style "min-width: 200px;")
-          ;div.grow
-            ;*  (turn chatlog:state chat-to-manx)
-          ==
-          ;form.fr
-            =method  "post"
-            =action  "/apps/tuner/chat/blah"
-            ;input.p-1.mono.grow
-              =type  "text"
-              =name  "message"
-              =placeholder  "message"
-              ;
+          ;div.grow.b2.fc(style "min-width: 200px;")
+            ;div.grow
+              ;*  (turn chatlog:state chat-to-manx)
             ==
-            ;button.p-1.b1.hover(type "submit"): send
+            ;form.fr
+              =method  "post"
+              =action  "/apps/tuner/chat/blah"
+              ;input.p-1.mono.grow
+                =type  "text"
+                =name  "message"
+                =placeholder  "message"
+                ;
+              ==
+              ;button.p-1.b1.hover(type "submit"): send
+              ==
             ==
           ==
         ==
       ==
-      ::
+    ::
+    ++  navbar
+      ^-  manx
+      ;nav#topnav.fs.g2
+        ;div.f.g2
+          ;div#nav-links
+            ;a/"https://urbit.org":"~Urbit"
+            ;a.active/"https://urbit.org/ecosystem/apps/radio":"Radio"
+          ==
+        ==
+        ;div#login-div
+          ;+  login-prompt
+        ==
+        ;script:"{script}"
+      ==
+    ::
+    ++  login-prompt
+      ^-  manx
+      ;a/"/tuner/log":"Log In"
+    ::
+    ++  script
+      ^~
+      %-  trip
+'''
+  async function setSigil(){
+    console.log("setting sigil")
+    const div = document.getElementById("login-div");
+    const res = await fetch("/tuner/f/sigil");
+    const t = await res.text();
+    console.log("sigil", t);
+    if (t) div.innerHTML = t;
+  }  
+  setSigil();
+'''
+    ::
+    ++  serve-sigil
+      ^-  manx
+      ?-  (clan:title src.bowl)
+        %czar  sigil
+        %king  sigil
+        %duke  sigil
+        %earl  sigil
+        %pawn  login-prompt
+      ==
+    ::
+    ++  sigil
+      ^-  manx
+      =/  ship  src.bowl
+      =/  p  (scow %p ship)
+        ;div.f.g2
+          ;p:"{p}"
+          ;+  ;a/"/tuner/logout":"Log Out"
+        ==
+    ::
     ++  serve-tune
       ^-  manx
       ;/  (scow %p (need tune.state))
@@ -160,7 +222,7 @@
     ::
     ++  serve-viewers
       ^-  manx
-      ;/  (scow %ud ~(wyt by viewers.state))
+      ;/  (scow %ud ~(wyt in viewers.state))
     ::
     ++  serve-sync
       ^-  manx
